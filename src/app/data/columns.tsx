@@ -1,54 +1,47 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { Prisma } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Sinistro = {
-  id: string
-  elegibilidade: string
-  sexo: "F" | "M"
-  faixa_etaria: string
-  plano: string
-  descricao_sinistro: string
-  tipo_utilizacao: string
-  valor_pago: number
-  quantidade: number
-  nome_grupo_empresa: string
-  no_ano_mes: string
-  categoria_geral: string
-}
+type Claims = Prisma.ClaimGetPayload<{}>
 
-export const columns: ColumnDef<Sinistro>[] = [
+export const columns: ColumnDef<Claims>[] = [
     {
         header: "ID",
         accessorKey: "id",
     },
     {
         header: "Elegibilidade",
-        accessorKey: "elegibilidade",
+        accessorKey: "role",
     },
     {
         header: "Sexo",
-        accessorKey: "sexo",
+        accessorKey: "gender",
     },
     {
         header: "Faixa Etária",
-        accessorKey: "faixa_etaria",
+        accessorKey: "ageGroup",
+        cell: (row) => {
+            const value = row.getValue() as number
+            return <span className="text-nowrap">{value}</span>
+        },
+        
     },
     {
         header: "Plano",
-        accessorKey: "plano",
+        accessorKey: "planDescription",
     },
     {
         header: "Descrição do Sinistro",
-        accessorKey: "descricao_sinistro",
+        accessorKey: "claimServiceDescription",
     },
     {
         header: "Tipo de Utilização",
-        accessorKey: "tipo_utilizacao",
+        accessorKey: "usageType",
     },
     {
         header: ({ column }) => {
@@ -59,7 +52,7 @@ export const columns: ColumnDef<Sinistro>[] = [
                 </Button>
             )
         },
-        accessorKey: "valor_pago",
+        accessorKey: "claimAmount",
         cell: (row) => {
             const value = row.getValue() as number
             return <span>{value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
@@ -67,18 +60,22 @@ export const columns: ColumnDef<Sinistro>[] = [
     },
     {
         header: "Quantidade",
-        accessorKey: "quantidade",
+        accessorKey: "quantity",
     },
     {
         header: "Nome do Grupo/Empresa",
-        accessorKey: "nome_grupo_empresa",
+        accessorKey: "enterpriseName",
     },
     {
         header: "No Ano/Mês",
-        accessorKey: "no_ano_mes",
+        accessorKey: "yearMonth",
     },
     {
         header: "Categoria Geral",
-        accessorKey: "categoria_geral",
+        accessorKey: "claimServiceCategory",
     },
+    {
+        header: "Possível doença relacionada",
+        accessorKey: "relatedDisease",
+    }
 ]

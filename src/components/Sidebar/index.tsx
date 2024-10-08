@@ -1,11 +1,12 @@
 // Sidebar.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SidebarButton from "./SidebarButton";
-import { ChatAIIcon, ConfigIcon, DashboardIcon, ReportIcon, SearchAIIcon, TableIcon } from "./IconsDashboard";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { CalcIcon, ChatAIIcon, ConfigIcon, DashboardIcon, ReportIcon, SearchAIIcon, TableIcon } from "./IconsDashboard";
 import { useTheme } from "next-themes";
+import { useSession } from "next-auth/react"
+import ChatAI from "@/types/chats.type";
 
 export default function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
@@ -30,14 +31,7 @@ export default function Sidebar() {
       <SidebarButton href="/dashboard" Icon={DashboardIcon} text="Dashboard" isHovered={isHovered} />
       <SidebarButton href="/report" Icon={ReportIcon} text="Relatório" isHovered={isHovered} />
       <SidebarButton href="/data" Icon={TableIcon} text="Tabela de dados" isHovered={isHovered} />
-      <SidebarButton href="/chat" Icon={ChatAIIcon} text="IA Generativa" isHovered={isHovered} isChat chats={[
-        { id: "1", name: "Chat 1" },
-        { id: "2", name: "Chat 2" },
-        { id: "3", name: "Chat 3" },
-        { id: "4", name: "Chat 4" },
-        { id: "5", name: "Chat 5" },
-      ]}/>
-      <SidebarButton href="/predictive" Icon={SearchAIIcon} text="Modelo preditivo" isHovered={isHovered} />
+      <SidebarButton href="/calculadora" Icon={CalcIcon} text="Calculadora de custos" isHovered={isHovered}/>
       <SidebarButton href="/config" Icon={ConfigIcon} text="Configurações" isHovered={isHovered} />
     </div>
   );

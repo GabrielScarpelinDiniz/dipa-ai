@@ -42,11 +42,25 @@ body {
         --border: 0 0% 89.8%;
         --input: 0 0% 89.8%;
         --ring: 0 0% 3.9%;
+        --chart-men: 220 70% 50%;
+        --chart-women: 180 90% 45%;
+        --chart-titular: 12 76% 61%;
+        --chart-dependente: 173 58% 39%;
         --chart-1: 12 76% 61%;
         --chart-2: 173 58% 39%;
         --chart-3: 197 37% 24%;
         --chart-4: 43 74% 66%;
         --chart-5: 27 87% 67%;
+        --chart-6: 220 70% 50%;
+        --chart-NP6X: 220 90% 50%;    /* Azul forte */
+        --chart-NP2X: 340 85% 45%;    /* Magenta vibrante */
+        --chart-QNR6: 50 80% 45%;     /* Verde vibrante */
+        --chart-TNE1: 280 75% 50%;    /* Roxo moderado */
+        --chart-TN1E: 20 85% 55%;     /* Vermelho alaranjado */
+        --chart-TNQ2: 130 70% 50%;    /* Verde azulado */
+        --chart-8XTP: 200 65% 55%;    /* Azul claro */
+        --chart-TQN2: 50 100% 55%;    /* Verde claro */
+        --chart-TP8X: 40 100% 55%;    /* Verde amarelado */
         --radius: 0.5rem;
     }
   .dark {
@@ -69,11 +83,24 @@ body {
         --border: 0 0% 14.9%;
         --input: 0 0% 14.9%;
         --ring: 0 0% 83.1%;
+        --chart-men: 220 70% 50%;
+        --chart-women: 180 90% 45%;
+        --chart-titular: 12 76% 61%;
+        --chart-dependente: 173 58% 39%;
         --chart-1: 220 70% 50%;
         --chart-2: 160 60% 45%;
         --chart-3: 30 80% 55%;
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%;
+        --chart-NP6X: 0 0% 100%;
+        --chart-NP2X: 10 40% 100%;
+        --chart-QNR6: 40 60% 80%;
+        --chart-TNE1: 35 20% 60%;
+        --chart-TN1E: 30 40% 60%;
+        --chart-TNQ2: 25 60% 60%;
+        --chart-8XTP: 20 80% 60%;
+        --chart-TQN2: 15 100% 60%;
+        --chart-TP8X: 10 100% 60%;
     }
 }
 

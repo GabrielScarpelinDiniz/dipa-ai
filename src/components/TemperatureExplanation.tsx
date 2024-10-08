@@ -9,11 +9,8 @@ export default function TemperatureExplanation() {
             
                 <div className={`absolute bg-white p-4 rounded-md shadow-md text-sm text-primary-900 w-72 translate-x-1/2 -translate-y-1/2 ${showExplanation ? "opacity-100 visible" : "opacity-0 invisible"} transition-all`}>
                     <p>
-                        A temperatura da inteligência artificial é um parâmetro que controla a aleatoriedade da amostra. 
-                        {"\n"}
-                        Quanto maior a temperatura, mais aleatória a amostra.
-                        {"\n"} 
-                        Quanto menor a temperatura, mais conservadora a amostra.
+                        Cookies necessários são essenciais para o funcionamento do site e são necessários para que o site funcione corretamente. Esta categoria inclui apenas cookies que garantem funcionalidades básicas e recursos de segurança do site. Esses cookies não armazenam nenhuma informação pessoal.
+                        
                     </p>
                 </div>
         </span>

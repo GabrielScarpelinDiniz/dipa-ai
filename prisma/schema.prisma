@@ -13,25 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Chat {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-
-  messages Message[]
-}
-
-model Message {
-  id        String   @id @default(cuid())
-  role      String
-  text      String
-  createdAt DateTime @default(now())
-  chatId    String
-  chat      Chat     @relation(fields: [chatId], references: [id])
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -39,50 +20,28 @@ model User {
   emailVerified DateTime?
   image         String?
   temperature   Float     @default(0.0)
-
-  chats    Chat[]
-  accounts Account[]
-  sessions Session[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-}
-
-model Session {
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@id([identifier, token])
+model Claim {
+  id                      Int      @id @default(autoincrement())
+  role                    String
+  enterpriseName          String
+  insured                 Int
+  gender                  String
+  ageGroup                String
+  planDescription         String
+  claimAmount             Float
+  claimServiceCode        String
+  claimServiceDescription String
+  usageType               String
+  claimDate               DateTime
+  providerCode            String
+  providerDescription     String
+  quantity                Int
+  yearMonth               String
+  relatedDisease          String
+  claimServiceCategory    String
+  cluster                 Int      @default(0)
 }

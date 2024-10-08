@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Relatório de Clusterização</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .container {
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .chart {
+            background-color: #fff;
+            height: 250px;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .chart img {
+            max-width: 100%;
+        }
+
+        .filters {
+            margin-bottom: 2rem;
+        }
+
+        .filters select {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navegação -->
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>Relatório de Clusterização</strong></li>
+        </ul>
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Relatórios</a></li>
+            <li><a href="#" role="button">Exportar dados</a></li>
+        </ul>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <main class="container">
+        <h1>Relatório de Clusterização de Colaboradores</h1>
+        <p>Veja abaixo a análise dos clusters e suas respectivas características para melhorar a adesão aos programas de
+            saúde.</p>
+
+        <!-- Filtros para seleção de clusters -->
+        <div class="filters">
+            <label for="cluster">Selecione o Cluster:</label>
+            <select id="cluster" name="cluster">
+                <option value="1">Cluster 1</option>
+                <option value="2">Cluster 2</option>
+                <option value="3">Cluster 3</option>
+                <option value="4">Cluster 4</option>
+            </select>
+            <button type="submit">Aplicar Filtros</button>
+        </div>
+
+        <!-- Grid para mostrar clusters e análises -->
+        <div class="grid">
+            <!-- Cluster 1 -->
+            <section class="card">
+                <hgroup>
+                    <h3>Cluster 1: Jovens Ativos</h3>
+                    <h4>Características:</h4>
+                </hgroup>
+                <p>Faixa Etária: 18-30 anos, Predominantemente do sexo masculino, Alta adesão a programas de exercícios
+                    físicos.</p>
+                <figure class="chart">
+                    <img src="https://via.placeholder.com/400x250" alt="Gráfico de Cluster 1" />
+                    <figcaption>Adesão aos Programas por Cluster</figcaption>
+                </figure>
+            </section>
+
+            <!-- Cluster 2 -->
+            <section class="card">
+                <hgroup>
+                    <h3>Cluster 2: Idosos Sedentários</h3>
+                    <h4>Características:</h4>
+                </hgroup>
+                <p>Faixa Etária: 50+ anos, Predominantemente do sexo feminino, Baixa adesão a programas de exercícios e
+                    alta incidência de doenças crônicas.</p>
+                <figure class="chart">
+                    <img src="https://via.placeholder.com/400x250" alt="Gráfico de Cluster 2" />
+                    <figcaption>Adesão aos Programas por Cluster</figcaption>
+                </figure>
+            </section>
+
+            <!-- Cluster 3 -->
+            <section class="card">
+                <hgroup>
+                    <h3>Cluster 3: Adultos Moderados</h3>
+                    <h4>Características:</h4>
+                </hgroup>
+                <p>Faixa Etária: 31-50 anos, Mix de gênero, Adesão moderada aos programas de saúde e boa resposta a
+                    programas de alimentação.</p>
+                <figure class="chart">
+                    <img src="https://via.placeholder.com/400x250" alt="Gráfico de Cluster 3" />
+                    <figcaption>Adesão aos Programas por Cluster</figcaption>
+                </figure>
+            </section>
+
+            <!-- Cluster 4 -->
+            <section class="card">
+                <hgroup>
+                    <h3>Cluster 4: Jovens Desmotivados</h3>
+                    <h4>Características:</h4>
+                </hgroup>
+                <p>Faixa Etária: 18-30 anos, Mix de gênero, Baixa adesão a qualquer programa de saúde, necessitando de
+                    incentivo.</p>
+                <figure class="chart">
+                    <img src="https://via.placeholder.com/400x250" alt="Gráfico de Cluster 4" />
+                    <figcaption>Adesão aos Programas por Cluster</figcaption>
+                </figure>
+            </section>
+        </div>
+    </main>
+
+    <!-- Formulário de exportação -->
+    <section aria-label="Exportação de dados">
+        <div class="container">
+            <article>
+                <hgroup>
+                    <h2>Exportar Relatório</h2>
+                    <h3>Selecione o formato e exporte os dados</h3>
+                </hgroup>
+                <form class="grid">
+                    <select id="format" name="format">
+                        <option value="pdf">PDF</option>
+                        <option value="xls">Excel</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                    <button type="submit" onclick="event.preventDefault()">Exportar</button>
+                </form>
+            </article>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="container">
+        <small><a href="#">Política de Privacidade</a> • <a href="#">Termos de Uso</a></small>
+    </footer>
+</body>
+
+</html>

@@ -8,7 +8,7 @@ export default function SignInGoogle() {
         "use server";
         await signIn("google", { redirectTo: "/dashboard" });
     }}>
-        <Button type="submit" className="bg-primary-900 gap-4 py-5 hover:bg-primary-800 transition-all">
+        <Button type="submit" className="bg-primary-900 gap-4 py-5 hover:bg-primary-800 transition-all text-white">
             <svg width={24} viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M55.4776 100.049C62.5485 77.0869 84.7948 56.1372 112.121 50.4029C134.099 45.7431 158.899 50.7875 177.137 67.8529C179.562 65.4793 210.704 35.0726 213.04 32.599C150.73 -23.8318 50.9594 -3.981 13.6268 68.8905L55.4776 100.049Z" fill="#E54335"/>
                 <path d="M55.3626 149.42C55.4137 149.383 55.4521 149.036 55.4904 149.011C50.0022 133.42 50.0022 112.542 55.4904 100.049H55.4776L13.6268 68.8905H13.614C13.614 68.8905 13.6269 68.8935 13.5503 69.0309C-4.91818 104.823 -4.1524 146.998 13.6779 181.079C13.6269 181.117 13.5886 181.139 13.5503 181.177L55.3626 149.42Z" fill="#F6B704"/>

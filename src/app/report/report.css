@@ -1,0 +1,22 @@
+@media print {
+  /* Esconder todos os elementos da página */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Mostrar apenas o conteúdo desejado */
+  .printable, .printable * {
+    visibility: visible;
+  }
+
+  /* Garantir que o conteúdo será impresso corretamente na posição certa */
+  .printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+.cluster1-chart-4 {
+    grid-column: 1 / span 2;
+}

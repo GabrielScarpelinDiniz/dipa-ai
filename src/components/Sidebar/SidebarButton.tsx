@@ -1,5 +1,6 @@
 "use client";
 
+import ChatAI from "@/types/chats.type";
 import Link from "next/link";
 import React, { ReactNode, useEffect, useState } from "react";
 
@@ -9,7 +10,7 @@ type SidebarButtonProps = {
   text: string;
   isHovered: boolean;
   isChat?: boolean;
-  chats?: { id: string; name: string }[]; // Lista de chats antigos
+  chats?: ChatAI[]; // Lista de chats antigos
 };
 
 export default function SidebarButton({
@@ -79,7 +80,7 @@ export default function SidebarButton({
                   href={`/chat/${chat.id}`}
                   className="block px-4 py-2 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded-md mt-2 mb-2"
                 >
-                  {chat.name}
+                  {chat.createdAt}
                 </Link>
               </li>
             ))

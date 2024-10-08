@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Claim" ALTER COLUMN "yearMonth" SET DATA TYPE TEXT;

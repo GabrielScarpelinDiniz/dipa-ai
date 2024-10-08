@@ -66,5 +66,16 @@ function ConfigIcon({ isActive }: { isActive?: boolean }){
         </svg>
     )
 }
+function CalcIcon({ isActive }: { isActive?: boolean }){
+    const {theme} = useTheme();
+    const isDarkMode = theme === "dark";
+    return (
+        <svg width={20} height={20} viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 1.5H23.5V23.5H1.5V1.5Z" stroke={isActive ? (isDarkMode ? "#0A3200" : "#FFFFFF") : (isDarkMode ? "#FFFFFF" : "#0A3200") } strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1.5 8.5H23.5" stroke={isActive ? (isDarkMode ? "#0A3200" : "#FFFFFF") : (isDarkMode ? "#FFFFFF" : "#0A3200") } strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1.5 15.5H23.5" stroke={isActive ? (isDarkMode ? "#0A3200" : "#FFFFFF") : (isDarkMode ? "#FFFFFF" : "#0A3200") } strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    )
+}
 
-export {DashboardIcon, ReportIcon, TableIcon, ChatAIIcon, SearchAIIcon, ConfigIcon}
+export {DashboardIcon, ReportIcon, TableIcon, ChatAIIcon, SearchAIIcon, ConfigIcon, CalcIcon}

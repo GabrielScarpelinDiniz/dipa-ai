@@ -1,13 +1,232 @@
+import { auth } from "@/auth";
 import BadgeReport from "@/components/Badge";
-import { BarChartComponent, ChartCurve, LineChartComponent, LineWithValuesChartComponent } from "@/components/Graphics";
+import { BarChartComponent, ChartCurve, HorizontalBarChartComponent, LineChartComponent } from "@/components/Graphics";
 import Sidebar from "@/components/Sidebar/index";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { prisma } from "@/lib/prisma";
 import { Roboto_Mono } from "next/font/google";
 import React from "react";
 
 const roboto_mono = Roboto_Mono({ subsets: ["latin"] });
 
-export default function Dashboard() {
+type ClaimsNumber = {
+  total: number,
+  month: Date
+}
+
+type ClaimsByAgeGroupAndGender = {
+  ageGroup: string,
+  total: number
+  gender: string,
+}
+
+async function getClaimsNumberInThisMonth(){
+  const date = new Date("2023-09-01")
+  const claimsCount = await prisma.claim.count({
+    where: {
+      claimDate: {
+        gte: new Date(date.getFullYear(), date.getMonth(), 1),
+        lt: new Date(date.getFullYear(), date.getMonth() + 1, 1)
+      }
+    }
+  })
+  return claimsCount
+}
+
+async function getClaimsValueInThisMonth(){
+  const date = new Date("2023-09-01")
+  const claimsValue = await prisma.claim.aggregate({
+    _sum: {
+      claimAmount: true
+    },
+    where: {
+      claimDate: {
+        gte: new Date(date.getFullYear(), date.getMonth(), 1),
+        lt: new Date(date.getFullYear(), date.getMonth() + 1, 1)
+      }
+    }
+  })
+  return claimsValue._sum
+}
+
+async function getMostUsedSpecialty(){
+  const mostUsedSpecialty = await prisma.claim.groupBy({
+    by: ["claimServiceDescription"],
+    _count: {
+      _all: true
+    },
+    orderBy: {
+      _count: {
+        id: 'desc'
+      }
+    },
+    _sum: {
+      claimAmount: true
+    }
+  })
+  return mostUsedSpecialty
+}
+
+async function getChartNumberClaimsLastYear(){
+  const monthNames  = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+  
+  const date = new Date("2023-09-01")
+  const claimsTitular = await prisma.$queryRaw`
+  SELECT DATE_TRUNC('month', "claimDate") AS month, COUNT(*) AS total 
+  FROM "Claim" 
+  WHERE "claimDate" >= DATE_TRUNC('month', (CURRENT_DATE - INTERVAL '1 year')) 
+    AND "claimDate" < DATE_TRUNC('month', CURRENT_DATE) 
+    AND "role" = 'TITULAR' 
+  GROUP BY month 
+  ORDER BY month;
+` as ClaimsNumber[];
+
+  const claimsDependent = await prisma.$queryRaw`
+    SELECT DATE_TRUNC('month', "claimDate") AS month, COUNT(*) AS total 
+    FROM "Claim" 
+    WHERE "claimDate" >= DATE_TRUNC('month', (CURRENT_DATE - INTERVAL '1 year')) 
+      AND "claimDate" < DATE_TRUNC('month', CURRENT_DATE) 
+      AND "role" = 'DEPENDENTE' 
+    GROUP BY month 
+    ORDER BY month;
+  ` as ClaimsNumber[];
+
+  // Mapeamento e combinação das queries
+  const claimsPerMonth = claimsTitular.map(titularClaim => {
+  // Formata o mês para o formato desejado "YYYY/MMMM"
+  const formattedMonth = `${titularClaim.month.getFullYear()}/${
+    monthNames[titularClaim.month.getMonth()]
+  }`;
+
+  // Encontra o correspondente dependente baseado no mês
+  const dependentClaim = claimsDependent.find(
+    (dependent) =>
+      dependent.month.getFullYear() === titularClaim.month.getFullYear() &&
+      dependent.month.getMonth() === titularClaim.month.getMonth()
+  );
+
+  // Retorna o formato desejado
+  return {
+    month: formattedMonth,
+    titular: Number(titularClaim.total),
+    dependente: Number(dependentClaim?.total || 0),
+  };
+});
+
+return claimsPerMonth;
+}
+
+async function getChartAgeGroupAndGender(){
+  const ageGroup = await prisma.$queryRaw`
+  SELECT "ageGroup", COUNT(*) AS total, "gender"
+  FROM "Claim" 
+  GROUP BY "ageGroup", "gender";
+` as ClaimsByAgeGroupAndGender[];
+
+  const mapped: {
+    ageGroup: string,
+    homens: number,
+    mulheres: number,
+  }[] = []
+  ageGroup.forEach((group) => {
+    const foundIndex = mapped.findIndex((item) => item.ageGroup === group.ageGroup);
+    if (foundIndex === -1) {
+      if (group.gender === "M") {
+        mapped.push({
+          ageGroup: group.ageGroup,
+          homens: Number(group.total),
+          mulheres: 0
+        })
+      }
+      else {
+        mapped.push({
+          ageGroup: group.ageGroup,
+          homens: 0,
+          mulheres: Number(group.total)
+        })
+      }
+    } else {
+      if (group.gender === "M") {
+        mapped[foundIndex].homens = Number(group.total)
+      }
+      else {
+        mapped[foundIndex].mulheres = Number(group.total)
+      }
+    }
+  });
+  return mapped;
+}
+
+async function getClaimsTotalValuePerMonth(){
+  const monthNames  = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+  const claimsMonthSum = await prisma.$queryRaw`
+    SELECT DATE_TRUNC('month', "claimDate") AS month, COUNT(*) AS total 
+    FROM "Claim" 
+    WHERE "claimDate" >= DATE_TRUNC('month', (CURRENT_DATE - INTERVAL '1 year')) 
+      AND "claimDate" < DATE_TRUNC('month', CURRENT_DATE)
+    GROUP BY month 
+    ORDER BY month;
+  ` as ClaimsNumber[];
+  const mapped = claimsMonthSum.map((claim) => {
+    return {
+      month: `${claim.month.getFullYear()}/${monthNames[claim.month.getMonth()]}`,
+      total: Number(claim.total)
+    }
+  })
+  return mapped
+}
+
+async function getMostUsedServicesInTheLastYear(){
+  const mostUsedSpecialty = await prisma.claim.groupBy({
+    by: ["claimServiceDescription"],
+    _count: {
+      _all: true
+    },
+    orderBy: {
+      _count: {
+        id: 'desc'
+      }
+    },
+    _sum: {
+      claimAmount: true
+    },
+    where: {
+      claimDate: {
+        gte: new Date(new Date().getFullYear() - 1, new Date().getMonth(), 1),
+        lt: new Date()
+      }
+    },
+    take: 5
+  })
+  // map the data to chart format
+  const mapped = mostUsedSpecialty.map((specialty, index) => {
+    return {
+      specialty: specialty.claimServiceDescription,
+      total: specialty._count._all,
+      amount: specialty._sum.claimAmount,
+      index: `service_${index}`,
+      fill: `var(--color-service_${index})` 
+    }
+  })
+  return mapped
+}
+
+
+
+
+
+export default async function Dashboard({ searchParams } : { searchParams: { [key: string]: string } }) {
+  const session = await auth()
+  console.log(session)
+
+  const claimsNumber = getClaimsNumberInThisMonth()
+  const claimsValue = getClaimsValueInThisMonth()
+  const mostUsedSpecialty = getMostUsedSpecialty()
+  const chartNumberClaimsLastYear = getChartNumberClaimsLastYear()
+  const chartAgeGroupAndGender = getChartAgeGroupAndGender()
+  const claimsTotalValuePerMonth = getClaimsTotalValuePerMonth()
+  const mostUsedServicesInTheLastYear = getMostUsedServicesInTheLastYear()
+
+  const [ claimsNumberValue, claimsValueValue, mostUsedSpecialtyValue, chartNumberClaimsLastYearValue, chartAgeGroupAndGenderValue, claimsTotalValuePerMonthValue, mostUsedServicesInTheLastYearValue ] = await Promise.all([claimsNumber, claimsValue, mostUsedSpecialty, chartNumberClaimsLastYear, chartAgeGroupAndGender, claimsTotalValuePerMonth, mostUsedServicesInTheLastYear])
   return (
     <>
       <Sidebar />
@@ -50,7 +269,7 @@ export default function Dashboard() {
                   Número de sinistros
                 </h4>
                 <div className="flex gap-4 mt-4 items-center">
-                  <p className={`text-4xl font-bold ${roboto_mono.className}`}>10,8K</p>
+                  <p className={`text-4xl font-bold ${roboto_mono.className}`}>{(claimsNumberValue/1000).toLocaleString("pt-br")}K</p>
                   <BadgeReport number={4.8} isPositive={true} />
                 </div>
               </div>
@@ -63,7 +282,7 @@ export default function Dashboard() {
                   Valor gasto com sinistro
                 </h4>
                 <div className="flex gap-4 mt-4 items-center">
-                  <p className={`text-4xl font-bold ${roboto_mono.className}`}>240,8K</p>
+                  <p className={`text-4xl font-bold ${roboto_mono.className}`}>{claimsValueValue.claimAmount ? (parseInt(claimsValueValue?.claimAmount as any)/1000000).toLocaleString("pt-br") : 0}Mi</p>
                   <BadgeReport number={2.8} isPositive={false} />
                 </div>
               </div>
@@ -75,9 +294,9 @@ export default function Dashboard() {
                   </svg>
                   Mais utilizado
                 </h4>
-                <p className={`text-2xl mt-4 font-bold ${roboto_mono.className}`}>OFTALMOLOGISTA</p>
+                <p className={`text-sm mt-4 font-bold ${roboto_mono.className}`}>{mostUsedSpecialtyValue[0].claimServiceDescription}</p>
                 <div className="flex gap-4 mt-4 items-center">
-                  <p className={`text-4xl font-bold ${roboto_mono.className}`}>240,8K</p>
+                  <p className={`text-4xl font-bold ${roboto_mono.className}`}>{mostUsedSpecialtyValue[0]._sum.claimAmount ? (mostUsedSpecialtyValue[0]._sum.claimAmount/1000000).toLocaleString("pt-br") : 0}Mi</p>
                   <BadgeReport number={2.8} isPositive={false} />
                 </div>
               </div>
@@ -86,12 +305,12 @@ export default function Dashboard() {
               <div className="flex justify-between gap-10 flex-col">
                 {/* Adicione a classe `equal-height` */}
                 <div className="flex w-full gap-12">
-                  <ChartCurve className="flex-[0.6]"/>
-                  <LineChartComponent className="flex-[0.4]"/>
+                  <ChartCurve className="flex-[0.6]" data={chartNumberClaimsLastYearValue}/>
+                  <LineChartComponent className="flex-[0.4]" data={claimsTotalValuePerMonthValue}/>
                 </div>
                 <div className="flex w-full gap-12">
-                  <BarChartComponent className="flex-[0.6]"/>
-                  <LineWithValuesChartComponent className="flex-[0.4]"/>
+                  <BarChartComponent className="flex-[0.6]" data={chartAgeGroupAndGenderValue}/>
+                  <HorizontalBarChartComponent className="flex-[0.4]" data={mostUsedServicesInTheLastYearValue}/>
                 </div>
               </div>
             </div>
