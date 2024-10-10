@@ -17,6 +17,9 @@
   }
 }
 
-.cluster1-chart-4 {
+.cluster0-chart-2 {
     grid-column: 1 / span 2;
+}
+.cluster0-chart-3 {
+  grid-column: 1 / span 2;
 }

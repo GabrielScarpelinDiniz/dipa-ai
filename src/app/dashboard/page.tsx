@@ -304,13 +304,13 @@ export default async function Dashboard({ searchParams } : { searchParams: { [ke
             <div className="graphics mt-8 h-fit">
               <div className="flex justify-between gap-10 flex-col">
                 {/* Adicione a classe `equal-height` */}
-                <div className="flex w-full gap-12">
-                  <ChartCurve className="flex-[0.6]" data={chartNumberClaimsLastYearValue}/>
-                  <LineChartComponent className="flex-[0.4]" data={claimsTotalValuePerMonthValue}/>
+                <div className="flex w-full gap-8">
+                  <ChartCurve className="flex-[0.5]" data={chartNumberClaimsLastYearValue}/>
+                  <LineChartComponent className="flex-[0.5]" data={claimsTotalValuePerMonthValue}/>
                 </div>
-                <div className="flex w-full gap-12">
-                  <BarChartComponent className="flex-[0.6]" data={chartAgeGroupAndGenderValue}/>
-                  <HorizontalBarChartComponent className="flex-[0.4]" data={mostUsedServicesInTheLastYearValue}/>
+                <div className="flex w-full gap-8">
+                  <BarChartComponent className="flex-[0.5]" data={chartAgeGroupAndGenderValue}/>
+                  <HorizontalBarChartComponent className="flex-[0.5]" data={mostUsedServicesInTheLastYearValue}/>
                 </div>
               </div>
             </div>

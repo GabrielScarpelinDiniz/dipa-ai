@@ -111,6 +111,9 @@ export function MonthChartBigger({ data, classname} : { data: any, classname?: s
                 return String(value)
               }}
             />
+            <YAxis tickLine={false} tickMargin={2} axisLine={false} tickFormatter={(value) => {
+                return Number(value).toLocaleString("pt-br")
+            }}/>
             <ChartTooltip
               content={
                 <ChartTooltipContent
@@ -322,6 +325,9 @@ export function MultipleBarChart({ data, classname} : { data: any, classname?: s
                 tickMargin={10}
                 axisLine={false}
                 />
+                <YAxis tickLine={false} tickMargin={2} axisLine={false} tickFormatter={(value) => {
+                  return Number(value).toLocaleString("pt-br")
+                }}/>
                 <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="dashed" />}
@@ -395,6 +401,9 @@ export function AgeGroupChart({ data, classname }: { data: any, classname?: stri
                 minTickGap={32}
                 tickFormatter={(value) => String(value)}
               />
+              <YAxis tickLine={false} tickMargin={2} axisLine={false} tickFormatter={(value) => {
+                return Number(value).toLocaleString("pt-br")
+              }}/>
               <ChartTooltip
                 content={<ChartTooltipContent className="w-[190px]" />}
                 formatter={(value, name, item) => {
@@ -426,61 +435,61 @@ export function AgeGroupChart({ data, classname }: { data: any, classname?: stri
 
 export function PieChartClusters({ data, classname } : { data: any, classname?: string}) {
     const chartConfig = {
-      "cluster_0": {
+      0: {
         label: "Cluster 0",
-        color: "hsl(var(--chart-0))",
-      },
-      "cluster_1": {
-        label: "Cluster 1",
         color: "hsl(var(--chart-1))",
       },
-      "cluster_2": {
-        label: "Cluster 2",
+      1: {
+        label: "Cluster 1",
         color: "hsl(var(--chart-2))",
       },
-      "cluster_3": {
-        label: "Cluster 3",
+      2: {
+        label: "Cluster 2",
         color: "hsl(var(--chart-3))",
       },
-      "cluster_4": {
-        label: "Cluster 4",
+      3: {
+        label: "Cluster 3",
         color: "hsl(var(--chart-4))",
       },
-      "cluster_5": {
-        label: "Cluster 5",
+      4: {
+        label: "Cluster 4",
         color: "hsl(var(--chart-5))",
+      },
+      5: {
+        label: "Cluster 5",
+        color: "hsl(var(--chart-6))",
       },
     } satisfies ChartConfig;
 
     const chartData = data || [
       {
-        cluster: "cluster_0",
-        quantidade: 100,
+        cluster: 0,
+        number: 100,
         fill: "hsl(var(--chart-1))",
       },
       {
-        cluster: "cluster_1",
-        quantidade: 200,
+        cluster: 1,
+        number: 200,
         fill: "hsl(var(--chart-2))",
       },
       {
-        cluster: "cluster_2",
-        quantidade: 300,
+        cluster: 2,
+        number: 300,
         fill: "hsl(var(--chart-3))",
       },
       {
-        cluster: "cluster_3",
-        quantidade: 400,
+        cluster: 3,
+        number: 400,
         fill: "hsl(var(--chart-4))",
       },
       {
-        cluster: "cluster_4",
-        quantidade: 500,
+        cluster: 4,
+        number: 500,
         fill: "hsl(var(--chart-5))",
       },
       {
-        cluster: "cluster_5",
-        quantidade: 600,
+        cluster: 5,
+        number: 600,
         fill: "hsl(var(--chart-6))",
       },
     ]
@@ -498,13 +507,15 @@ export function PieChartClusters({ data, classname } : { data: any, classname?: 
         >
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <Pie data={chartData} dataKey="quantidade" label nameKey="cluster" />
+            <Pie data={chartData} dataKey="number" label={(item) => {
+              return Number(item.value).toLocaleString("pt-br")
+            }} nameKey="cluster" />
           </PieChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Esse gráfico mostra a distribuição dos grupos na base de dados.
         </div>
       </CardFooter>
     </Card>
@@ -513,61 +524,61 @@ export function PieChartClusters({ data, classname } : { data: any, classname?: 
 
 export function PieChartClustersAmount({ data, classname } : { data: any, classname?: string}) {
   const chartConfig = {
-    "cluster_0": {
+    "0": {
       label: "Cluster 0",
-      color: "hsl(var(--chart-0))",
-    },
-    "cluster_1": {
-      label: "Cluster 1",
       color: "hsl(var(--chart-1))",
     },
-    "cluster_2": {
-      label: "Cluster 2",
+    "1": {
+      label: "Cluster 1",
       color: "hsl(var(--chart-2))",
     },
-    "cluster_3": {
-      label: "Cluster 3",
+    "2": {
+      label: "Cluster 2",
       color: "hsl(var(--chart-3))",
     },
-    "cluster_4": {
-      label: "Cluster 4",
+    "3": {
+      label: "Cluster 3",
       color: "hsl(var(--chart-4))",
     },
-    "cluster_5": {
-      label: "Cluster 5",
+    "4": {
+      label: "Cluster 4",
       color: "hsl(var(--chart-5))",
+    },
+    "5": {
+      label: "Cluster 5",
+      color: "hsl(var(--chart-6))",
     },
   } satisfies ChartConfig;
 
   const chartData = data || [
     {
-      cluster: "cluster_0",
-      quantidade: 10000,
+      cluster: "0",
+      value: 10000,
       fill: "hsl(var(--chart-1))",
     },
     {
-      cluster: "cluster_1",
-      quantidade: 20000,
+      cluster: "1",
+      value: 20000,
       fill: "hsl(var(--chart-2))",
     },
     {
-      cluster: "cluster_2",
-      quantidade: 30000,
+      cluster: "2",
+      value: 30000,
       fill: "hsl(var(--chart-3))",
     },
     {
-      cluster: "cluster_3",
-      quantidade: 40000,
+      cluster: "3",
+      value: 40000,
       fill: "hsl(var(--chart-4))",
     },
     {
-      cluster: "cluster_4",
-      quantidade: 50000,
+      cluster: "4",
+      value: 50000,
       fill: "hsl(var(--chart-5))",
     },
     {
-      cluster: "cluster_5",
-      quantidade: 60000,
+      cluster: "5",
+      value: 60000,
       fill: "hsl(var(--chart-6))",
     },
   ]
@@ -585,6 +596,7 @@ export function PieChartClustersAmount({ data, classname } : { data: any, classn
       >
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent hideLabel />} formatter={(value, name, item) => {
+            console.log(" item e name ", item, name)
               return (
                   <div>
                       <div className="flex gap-2 items-center">
@@ -594,12 +606,14 @@ export function PieChartClustersAmount({ data, classname } : { data: any, classn
                           </div>
                       </div>
                       <div className="mt-2">
-                          <p>Valor total: {Number(item.payload.quantidade).toLocaleString("pt-br", { currency: "BRL", style: "currency"})}</p>
+                          <p>Valor total: {Number(item.payload.value).toLocaleString("pt-br", { currency: "BRL", style: "currency"})}</p>
                       </div>
                   </div>
               )
           }}/>
-          <Pie data={chartData} dataKey="quantidade" label nameKey="cluster" />
+          <Pie data={chartData} dataKey="value" label={(item) => {
+            return Number(item.value).toLocaleString("pt-br", { style: "currency", currency: "BRL" })
+          }} nameKey="cluster" />
         </PieChart>
       </ChartContainer>
     </CardContent>
@@ -783,7 +797,7 @@ export function MultipleBarChartClusterCompare({ data, classname} : { data: any,
   const [chartData, setChartData] = useState(data || mockData)
   useEffect(() => {
       if (activeChart === "count") {
-          setChartData(mockData.map((item: any) => {
+          setChartData(data.map((item: any) => {
               return {
                   month: item.date,
                   cluster_0: item.cluster_0 ? item.cluster_0.number : 0,
@@ -796,7 +810,7 @@ export function MultipleBarChartClusterCompare({ data, classname} : { data: any,
           }))
       }
       else {
-          setChartData(mockData.map((item: any) => {
+          setChartData(data.map((item: any) => {
               return {
                   month: item.date,
                   cluster_0: item.cluster_0 ? item.cluster_0.value : 0,
@@ -810,6 +824,7 @@ export function MultipleBarChartClusterCompare({ data, classname} : { data: any,
       }
   }, [activeChart])
 
+  console.log("Multiple bar data", data)
   const chartConfig = {
       "cluster_0": {
           label: "Cluster 0",
@@ -929,6 +944,7 @@ export function MultipleBarChartClusterCompare({ data, classname} : { data: any,
               tickMargin={10}
               axisLine={false}
               />
+              <YAxis tickLine={false} tickMargin={10} axisLine={false} />
               <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="dashed" />}
@@ -949,58 +965,12 @@ interface AgePyramidProps {
 }
 
 export function AgePyramid({ data, className }: AgePyramidProps) {
-  const mockData = [
-    {
-      ageGroup: "0-10",
-      male: 5000,
-      female: 5000,
-    },
-    {
-      ageGroup: "11-20",
-      male: 7000,
-      female: 8000,
-    },
-    {
-      ageGroup: "21-30",
-      male: 10000,
-      female: 10000,
-    },
-    {
-      ageGroup: "31-40",
-      male: 9000,
-      female: 11000,
-    },
-    {
-      ageGroup: "41-50",
-      male: 8000,
-      female: 12000,
-    },
-    {
-      ageGroup: "51-60",
-      male: 7000,
-      female: 13000,
-    },
-    {
-      ageGroup: "61-70",
-      male: 6000,
-      female: 14000,
-    },
-    {
-      ageGroup: "71-80",
-      male: 4000,
-      female: 16000,
-    },
-    {
-      ageGroup: "81-90",
-      male: 2000,
-      female: 18000,
-    },
-  ];
-
   const maxValue = Math.max(
-    ...mockData.map((d) => Math.max(d.male, d.female))
+    ...data.map((d: any) => Math.max(d.homem, d.mulher))
   ); // Encontra o valor máximo para sincronizar a escala
-
+  useEffect(() => {
+    console.log("data", data);
+  }, [])
   const chartConfig = {
     ageGroup: {
       label: "Faixa Etária",
@@ -1023,13 +993,13 @@ export function AgePyramid({ data, className }: AgePyramidProps) {
         <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-1/2">
           <BarChart
             accessibilityLayer
-            data={mockData}
+            data={data}
             layout="vertical"
             margin={{ left: 0, right: 10 }}
           >
             <CartesianGrid vertical={true} />
             <XAxis
-              dataKey="male"
+              dataKey="homem"
               type="number"
               domain={[0, maxValue]} // Sincroniza a escala com o gráfico feminino
               tickLine={false}
@@ -1050,12 +1020,12 @@ export function AgePyramid({ data, className }: AgePyramidProps) {
                 <div>
                   <div className="flex gap-2">
                     <div className="text-xs text-muted-foreground">Quantidade: </div>
-                    <div className="text-xs font-bold">{item.payload.male}</div>
+                    <div className="text-xs font-bold">{item.payload.homem}</div>
                   </div>
                 </div>
               )}
             />
-            <Bar dataKey={"male"} fill={`hsl(var(--chart-men))`} radius={4} />
+            <Bar dataKey={"homem"} fill={`hsl(var(--chart-men))`} radius={4} />
           </BarChart>
         </ChartContainer>
 
@@ -1063,13 +1033,13 @@ export function AgePyramid({ data, className }: AgePyramidProps) {
         <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-1/2">
           <BarChart
             accessibilityLayer
-            data={mockData}
+            data={data}
             layout="vertical"
             margin={{ left: 10, right: 0 }}
           >
             <CartesianGrid vertical={true} />
             <XAxis
-              dataKey="female"
+              dataKey="mulher"
               type="number"
               domain={[0, maxValue]} // Sincroniza a escala com o gráfico masculino
               tickLine={false}
@@ -1091,12 +1061,12 @@ export function AgePyramid({ data, className }: AgePyramidProps) {
                 <div>
                   <div className="flex gap-2">
                     <div className="text-xs text-muted-foreground">Quantidade: </div>
-                    <div className="text-xs font-bold">{item.payload.female}</div>
+                    <div className="text-xs font-bold">{item.payload.mulher}</div>
                   </div>
                 </div>
               )}
             />
-            <Bar dataKey={"female"} fill={`hsl(var(--chart-women))`} radius={4} />
+            <Bar dataKey={"mulher"} fill={`hsl(var(--chart-women))`} radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>
@@ -1105,25 +1075,20 @@ export function AgePyramid({ data, className }: AgePyramidProps) {
 }
 
 export function RadarClusterChart( { data, classname } : { data: any, classname?: string} ) {
-  const chartData = [
-    { month: "Homens", desktop: 186 },
-    { month: "Dependentes", desktop: 305 },
-    { month: "Mulheres", desktop: 237 },
-    { month: "Titulares", desktop: 273 },
-  ]
+
   
   const chartConfig = {
-    desktop: {
-      label: "Desktop",
+    value: {
+      label: "Frequência",
       color: "hsl(var(--chart-1))",
     },
   } satisfies ChartConfig
   return (
     <Card className={classname}>
-      <CardHeader className="items-center pb-4">
-        <CardTitle>Radar Chart</CardTitle>
+      <CardHeader className="pb-4">
+        <CardTitle>Radar geral do cluster</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Esse radar mostra a frequência do gênero e elegibilidade dentro do cluster.
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
@@ -1131,13 +1096,13 @@ export function RadarClusterChart( { data, classname } : { data: any, classname?
           config={chartConfig}
           className="mx-auto max-h-[250px]"
         >
-          <RadarChart data={chartData}>
+          <RadarChart data={data}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <PolarAngleAxis dataKey="month" />
+            <PolarAngleAxis dataKey="label" />
             <PolarGrid />
             <Radar
-              dataKey="desktop"
-              fill="var(--color-desktop)"
+              dataKey="value"
+              fill="var(--color-value)"
               fillOpacity={0.6}
             />
           </RadarChart>
@@ -1145,7 +1110,7 @@ export function RadarClusterChart( { data, classname } : { data: any, classname?
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 leading-none text-muted-foreground">
-          January - June 2024
+          Durante toda a base de dados
         </div>
       </CardFooter>
     </Card>

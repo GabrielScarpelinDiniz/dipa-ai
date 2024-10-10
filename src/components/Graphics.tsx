@@ -116,9 +116,9 @@ export function LineChartComponent({ className, data }: { className?: string, da
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>Total de sinistros por mês</CardTitle>
+        <CardTitle>Total (valor gasto) de sinistros por mês</CardTitle>
         <CardDescription>
-            Mostrando o totla de sinistros dos últimos 12 meses
+            Mostrando o valor total de sinistros dos últimos 12 meses
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -302,7 +302,7 @@ export function HorizontalBarChartComponent({ className, data }: { className?: s
               tickFormatter={(value) =>
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
-              tick={{ fontSize: 5, overflow: "scroll" }}
+              tick={{ fontSize: 6 }}
             />
             <XAxis dataKey="total" type="number" hide />
             <ChartTooltip
@@ -334,12 +334,24 @@ export function HorizontalBarChartComponent({ className, data }: { className?: s
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+      <CardFooter>
+        <div className="flex w-full items-start gap-2 text-sm">
+          <div className="gap-2 flex flex-col">
+            {data.map((item: any, index: number) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 font-medium leading-none text-muted-foreground text-xs"
+              >
+                <span
+                  className="w-[4px] h-[16px] rounded-sm"
+                  style={{
+                    backgroundColor: `hsl(var(--chart-${index + 1}))`,  // Resolvendo a cor dinamicamente
+                  }}
+                />
+                {item.specialty}
+              </div>
+            ))}
+          </div>
         </div>
       </CardFooter>
     </Card>

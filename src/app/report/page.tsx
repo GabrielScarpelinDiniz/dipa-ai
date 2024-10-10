@@ -8,6 +8,10 @@ import "./report.css"
 import ClusterAnalyze from "@/components/ClusterAnalyze";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ServiceRankingClustered from "@/components/ClusterRanking";
+import { SuperChart } from "@/components/SuperChart";
+import DescribeKpi from "@/components/DescribeKpi";
+import TopServiceClusterKpi from "@/components/TopClusterKpi";
+import AgeGroupKpi from "@/components/AgeGroupKpi";
 
 async function getClaimsNumberAndValueSumByMonth() {
     const claims = await prisma.$queryRaw`
@@ -68,6 +72,7 @@ async function getClaimsNumberAndValueSumByMonth() {
     const claimsMappedArray = Object.values(claimsMapped);
     return claimsMappedArray;
 }
+
 async function getClaimsByPlanByMonth() {
     const claims = await prisma.$queryRaw`
         SELECT
@@ -131,6 +136,8 @@ async function getTopServices() {
     return services;
 }
 
+
+
 async function getClaimsByAgeGroup() {
     const claims = await prisma.$queryRaw`
         SELECT
@@ -155,12 +162,222 @@ async function getClaimsByAgeGroup() {
     return claimsMapped;
 }
 
+async function getAgePyramid(clusterId: number) {
+    const claims = await prisma.$queryRaw`
+        SELECT
+            COUNT(claims.id) as number,
+            SUM(claims."claimAmount") as value,
+            claims."ageGroup",
+            claims.gender
+        FROM
+            "Claim" claims
+        WHERE
+            claims.cluster = ${clusterId}
+        GROUP BY
+            claims."ageGroup",
+            claims.gender
+        ORDER BY
+            claims."ageGroup" ASC
+    ` as any[];
+    const mappedClaims = claims.reduce((acc: any[], claim: any) => {
+        const { ageGroup, gender, number } = claim;
+
+        // Procurar se já existe uma entrada para esse grupo etário
+        let ageGroupEntry = acc.find((entry) => entry.ageGroup === ageGroup);
+
+        // Se não houver, criar uma nova entrada para esse grupo etário
+        if (!ageGroupEntry) {
+            ageGroupEntry = {
+                ageGroup: ageGroup,
+                homem: 0,
+                mulher: 0,
+            };
+            acc.push(ageGroupEntry);
+        }
+
+        // Mapear o número baseado no gênero
+        if (gender === 'M') {
+            ageGroupEntry.homem = Number(number); // Converter BigInt para Number
+        } else if (gender === 'F') {
+            ageGroupEntry.mulher = Number(number); // Converter BigInt para Number
+        }
+
+        return acc;
+    }, []);
+
+    return mappedClaims;
+}
+
+async function getRadarGroupChart(clusterId: number) {
+    const valueGender = await prisma.$queryRaw`
+        SELECT
+            COUNT("id") as number,
+            "gender"
+        FROM "Claim"
+        WHERE "cluster" = ${clusterId}
+        GROUP BY "gender"
+        ORDER BY number ASC
+    ` as any[];
+    const valueRole = await prisma.$queryRaw`
+        SELECT
+            COUNT("id") as number,
+            "role"
+        FROM "Claim"
+        WHERE "cluster" = ${clusterId}
+        GROUP BY "role"
+        ORDER BY number ASC
+    ` as any[];
+    const valuesMapped:
+        {
+            label: string,
+            value: number
+        }[] = []
+    valueGender.forEach((value) => {
+        valuesMapped.push({
+            label: value.gender === 'M' ? 'HOMENS' : 'MULHERES',
+            value: parseInt(value.number)
+        });
+    });
+    valueRole.forEach((value) => {
+
+        if (value.role === 'DEPENDENTE' || value.role === 'AGREGADO') {
+            // se for dependente ou agregado, somar no mesmo valor
+            const index = valuesMapped.findIndex((item) => item.label === 'DEPENDENTE');
+            if (index !== -1) {
+                valuesMapped[index].value += parseInt(value.number);
+            } else {
+                valuesMapped.push({
+                    label: 'DEPENDENTE',
+                    value: parseInt(value.number)
+                });
+            }
+        } else {
+            valuesMapped.push({
+                label: value.role,
+                value: parseInt(value.number)
+            });
+        }
+    });
+    console.log(valuesMapped);
+    return valuesMapped;
+}
+
+async function getClusterRanking(clusterId: number) {
+    const services = await prisma.$queryRaw`
+        SELECT 
+            claims."claimServiceDescription" as label,
+            COUNT(claims.id) as number,
+            SUM(claims."claimAmount") as value
+        FROM "Claim" claims
+        WHERE claims.cluster = ${clusterId}
+        GROUP BY claims."claimServiceDescription"
+        ORDER BY number DESC
+        LIMIT 5
+    ` as any[];
+    const relatedDiseases = await prisma.$queryRaw`
+        SELECT 
+            claims."relatedDisease" as label,
+            COUNT(claims.id) as number,
+            SUM(claims."claimAmount") as value
+        FROM "Claim" claims
+        WHERE claims.cluster = ${clusterId}
+        GROUP BY claims."relatedDisease"
+        ORDER BY number DESC
+        LIMIT 5
+    ` as any[];
+
+    const categories = await prisma.$queryRaw`
+        SELECT 
+            claims."claimServiceCategory" as label,
+            COUNT(claims.id) as number,
+            SUM(claims."claimAmount") as value
+        FROM "Claim" claims
+        WHERE claims.cluster = ${clusterId}
+        GROUP BY claims."claimServiceCategory"
+        ORDER BY number DESC
+        LIMIT 5
+    ` as any[];
+
+    return {
+        services,
+        relatedDiseases,
+        categories
+    };
+}
+
+async function getClusterDistribution() {
+    const clustersDescribe = await prisma.$queryRaw`
+        SELECT
+            COUNT(claims.id) as number,
+            SUM(claims."claimAmount") as value,
+            claims.cluster
+        FROM
+            "Claim" claims
+        GROUP BY
+            claims.cluster
+    ` as any[];
+    // convertendo os bigint para number
+    clustersDescribe.forEach((cluster, index) => {
+        cluster.number = parseInt(cluster.number);
+        cluster.value = parseInt(cluster.value);
+        cluster.fill = `hsl(var(--chart-${index + 1}))`
+    });
+    return clustersDescribe;
+}
+
+async function getClusterByMonth() {
+    const clusters = await prisma.$queryRaw`
+        SELECT
+            TO_CHAR("claimDate", 'YYYY-MM') as month,
+            COUNT("id") as number,
+            SUM("claimAmount") as value,
+            "cluster"
+        FROM "Claim"
+        GROUP BY TO_CHAR("claimDate", 'YYYY-MM'), "cluster"
+        ORDER BY TO_CHAR("claimDate", 'YYYY-MM')
+    ` as any[];
+
+    // Mapeando os clusters para a estrutura esperada pelo gráfico
+    const clustersMapped = clusters.reduce((acc, cluster) => {
+        const { month, number, value, cluster: clusterId } = cluster;
+
+        // Se o mês ainda não foi adicionado, inicializamos um objeto para ele
+        if (!acc[month]) {
+            acc[month] = {
+                date: month,
+                cluster_0: { number: 0, value: 0 },
+                cluster_1: { number: 0, value: 0 },
+                cluster_2: { number: 0, value: 0 },
+                cluster_3: { number: 0, value: 0 },
+                cluster_4: { number: 0, value: 0 },
+                cluster_5: { number: 0, value: 0 },
+            };
+        }
+
+        // Mapear o clusterId para o nome correto (cluster_0, cluster_1, etc.)
+        acc[month][`cluster_${clusterId}`] = {
+            number: Number(number),
+            value: Number(value),
+        };
+
+        return acc;
+    }, {} as Record<string, any>);
+
+    // Converter o objeto para um array de meses com os clusters aninhados
+    const formattedData = Object.values(clustersMapped);
+
+    console.log(formattedData);
+    return formattedData;
+}
+
 export default async function Report() {
     const session = await auth();
     console.log(session);
     const claims = await getClaimsNumberAndValueSumByMonth();
     const claimsByPlan = await getClaimsByPlanByMonth();
     const claimsByAgeGroup = await getClaimsByAgeGroup();
+    const clustersDistribution = await getClusterDistribution();
+    const clustersByMonth = await getClusterByMonth();
 
     return (
         <div className="w-full">
@@ -180,50 +397,23 @@ export default async function Report() {
                     <h2 className="font-bold text-lg text-primary-900 dark:text-white mt-8">Análise dos clusters</h2>
                     <p className="indent-4 mt-6 text-sm text-text-800 dark:text-white">Aqui você encontra uma análise dos clusters de sinistros, que são grupos de sinistros que possuem características semelhantes. Essa análise é feita com base em dados de sinistros, como valor, quantidade e outros.</p>
                     <div className="flex flex-1 gap-4 mt-4">
-                        <PieChartClusters data={null} classname="flex-[0.5]"/>
-                        <PieChartClustersAmount data={null} classname="flex-[0.5]"/>
+                        <PieChartClusters data={clustersDistribution} classname="flex-[0.5]"/>
+                        <PieChartClustersAmount data={clustersDistribution} classname="flex-[0.5]"/>
                     </div>
-                    <MultipleBarChartClusterCompare data={null} classname="mt-8"/>
+                    <MultipleBarChartClusterCompare data={clustersByMonth} classname="mt-8"/>
                     <ClusterAnalyze title="Cluster 1"
-                        classKey="cluster1"
+                        classKey="cluster0"
                         charts={[
-                            <AgePyramid data={null} key={0}/>,
-                            <RadarClusterChart data={undefined} key={1} classname="h-full"/>,
-                            <ServiceRankingClustered clusterId={0} key={2}/>,
-                            <LineClusterMultipleChart data={null} key={3} classname="h-full"/>,
-                            <ClusterBarChartAllFilters data={null} key={4} classname="h-full"/>
+                            <AgePyramid data={await getAgePyramid(0)} key={0} />,
+                            <RadarClusterChart data={await getRadarGroupChart(0)} key={1} classname="h-full"/>,
+                            <ServiceRankingClustered clusterId={0} key={2} data={await getClusterRanking(0)}/>,
+                            <SuperChart key={4} classname="h-full" clusterId={0}/>
                     ]} 
                         explanation="Explicação do cluster 1" 
-                        kpis={[<Card key={0}>
-                        <CardHeader>
-                            <CardTitle>Descrição dos valores</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex flex-col gap-1">
-                            <span>Média: R$ 1.000,00</span>
-                            <span>Desvio padrão: R$ 500,00</span>
-                            <span>Valor total: R$ 10.000,00</span>
-                            <span>Quantidade de sinistros: 10</span>
-                        </CardContent>
-                        </Card>, <Card key={1} className="h-full">
-                            <CardHeader>
-                                <CardTitle>Serviço mais utilizado</CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex flex-col gap-1">
-                                <span>Consulta médica</span>
-                                <span>Quantidade de sinistros: 100</span>
-                                <span>Valor total: R$ 10.000,00</span>
-                            </CardContent>
-                        </Card>,
-                        <Card key={2} className="h-full">
-                            <CardHeader>
-                                <CardTitle>Faixa etária mais comum</CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex flex-col gap-1">
-                                <span>0-18 anos</span>
-                                <span>Quantidade de sinistros: 100</span>
-                                <span>Valor total: R$ 10.000,00</span>
-                            </CardContent>
-                        </Card>
+                        kpis={[
+                            <DescribeKpi clusterId={0} key={0}/>,
+                            <TopServiceClusterKpi clusterId={0} key={1}/>,
+                            <AgeGroupKpi clusterId={0} key={2}/>
                     ]}/>
                 </div>
                 
