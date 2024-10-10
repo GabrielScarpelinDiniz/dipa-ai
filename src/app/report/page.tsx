@@ -12,6 +12,7 @@ import { SuperChart } from "@/components/SuperChart";
 import DescribeKpi from "@/components/DescribeKpi";
 import TopServiceClusterKpi from "@/components/TopClusterKpi";
 import AgeGroupKpi from "@/components/AgeGroupKpi";
+import { redirect } from "next/navigation";
 
 async function getClaimsNumberAndValueSumByMonth() {
     const claims = await prisma.$queryRaw`
@@ -373,6 +374,9 @@ async function getClusterByMonth() {
 export default async function Report() {
     const session = await auth();
     console.log(session);
+    if (!session) {
+        redirect('/access-denied');
+    }
     const claims = await getClaimsNumberAndValueSumByMonth();
     const claimsByPlan = await getClaimsByPlanByMonth();
     const claimsByAgeGroup = await getClaimsByAgeGroup();

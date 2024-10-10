@@ -1,7 +1,11 @@
-import { signOut } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 
-export default function SignOutPage() {
+export default async function SignOutPage() {
+    const session = await auth();
+    if (!session) {
+        redirect('/access-denied');
+    }
     
     return (
         <div className="w-screen h-screen bg-gradient-to-br from-gray-100 to-blue-300 dark:from-gray-900 dark:to-gray-700 flex justify-center items-center">

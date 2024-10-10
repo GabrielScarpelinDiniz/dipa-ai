@@ -4,6 +4,7 @@ import { BarChartComponent, ChartCurve, HorizontalBarChartComponent, LineChartCo
 import Sidebar from "@/components/Sidebar/index";
 import { prisma } from "@/lib/prisma";
 import { Roboto_Mono } from "next/font/google";
+import { redirect } from "next/navigation";
 import React from "react";
 
 const roboto_mono = Roboto_Mono({ subsets: ["latin"] });
@@ -217,6 +218,9 @@ async function getMostUsedServicesInTheLastYear(){
 export default async function Dashboard({ searchParams } : { searchParams: { [key: string]: string } }) {
   const session = await auth()
   console.log(session)
+  if (!session) {
+    redirect('/access-denied')
+  }
 
   const claimsNumber = getClaimsNumberInThisMonth()
   const claimsValue = getClaimsValueInThisMonth()

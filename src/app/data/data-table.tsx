@@ -115,18 +115,6 @@ export function DataTable<TData, TValue>({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page, pageSize]);
 
-  // For out click event on filters div
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (isOpen && !e.composedPath().includes(document.querySelector(".filter-item") as EventTarget)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("click", handleClick);
-    return () => {
-      document.removeEventListener("click", handleClick);
-    };
-  }, [isOpen]);
 
   return (
     <>

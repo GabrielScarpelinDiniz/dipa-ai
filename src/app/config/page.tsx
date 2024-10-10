@@ -6,12 +6,15 @@ import * as Switchh from '@radix-ui/react-switch';
 import { Input } from "@/components/ui/input";
 import ThemeButtonsChanger from "@/components/ThemeChanger";
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 
 
 export default async function ConfigPage() {
     const session = await auth();
-
+    if (!session) {
+        redirect('/access-denied');
+    }
     async function updateName(formData: FormData) {
         "use server";
 

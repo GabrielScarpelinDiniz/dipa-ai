@@ -3,6 +3,8 @@ import React from 'react';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
 async function getClaims(){
     const claims = await prisma.claim.findMany({
@@ -16,6 +18,10 @@ async function getClaims(){
 
 export default async function Data(){
     const dataTable = await getClaims();
+    const session = await auth();
+    if (!session) {
+        redirect('/access-denied');
+    }
     
     return (
         <>

@@ -3,6 +3,8 @@ import { Combobox } from "@/components/Combobox";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { prisma } from "@/lib/prisma";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 async function getClasses(){
@@ -26,6 +28,14 @@ export default function CalculadoraPage() {
     const [codigoServicoSinistro, setCodigoServicoSinistro] = useState<string | null>(null)
     const [doencaRelacionada, setDoencaRelacionada] = useState<string | null>(null)
     const [result, setResult] = useState<string | null>(null)
+    const { data: session, status } = useSession()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            router.push('/access-denied')
+        }
+    }, [status])
 
     useEffect(() => {
         getClasses().then((data) => {
