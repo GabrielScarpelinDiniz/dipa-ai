@@ -415,6 +415,76 @@ export default async function Report() {
                             <TopServiceClusterKpi clusterId={0} key={1}/>,
                             <AgeGroupKpi clusterId={0} key={2}/>
                     ]}/>
+                    <ClusterAnalyze title="Cluster 2"
+                        classKey="cluster1"
+                        charts={[
+                            <AgePyramid data={await getAgePyramid(1)} key={0} />,
+                            <RadarClusterChart data={await getRadarGroupChart(1)} key={1} classname="h-full"/>,
+                            <ServiceRankingClustered clusterId={1} key={2} data={await getClusterRanking(1)}/>,
+                            <SuperChart key={4} classname="h-full" clusterId={1}/>
+                    ]} 
+                        explanation="Explicação do cluster 2" 
+                        kpis={[
+                            <DescribeKpi clusterId={1} key={0}/>,
+                            <TopServiceClusterKpi clusterId={1} key={1}/>,
+                            <AgeGroupKpi clusterId={1} key={2}/>
+                    ]}/>
+                    <ClusterAnalyze title="Cluster 3"
+                        classKey="cluster2"
+                        charts={[
+                            <AgePyramid data={await getAgePyramid(2)} key={0} />,
+                            <RadarClusterChart data={await getRadarGroupChart(2)} key={1} classname="h-full"/>,
+                            <ServiceRankingClustered clusterId={2} key={2} data={await getClusterRanking(2)}/>,
+                            <SuperChart key={4} classname="h-full" clusterId={2}/>
+                    ]} 
+                        explanation="Explicação do cluster 3" 
+                        kpis={[
+                            <DescribeKpi clusterId={2} key={0}/>,
+                            <TopServiceClusterKpi clusterId={2} key={1}/>,
+                            <AgeGroupKpi clusterId={2} key={2}/>
+                    ]}/>
+                    <ClusterAnalyze title="Cluster 4"
+                        classKey="cluster3"
+                        charts={[
+                            <AgePyramid data={await getAgePyramid(3)} key={0} />,
+                            <RadarClusterChart data={await getRadarGroupChart(3)} key={1} classname="h-full"/>,
+                            <ServiceRankingClustered clusterId={3} key={2} data={await getClusterRanking(3)}/>,
+                            <SuperChart key={4} classname="h-full" clusterId={3}/>
+                    ]} 
+                        explanation="Explicação do cluster 4" 
+                        kpis={[
+                            <DescribeKpi clusterId={3} key={0}/>,
+                            <TopServiceClusterKpi clusterId={3} key={1}/>,
+                            <AgeGroupKpi clusterId={3} key={2}/>
+                    ]}/>
+                    <ClusterAnalyze title="Cluster 5"
+                        classKey="cluster4"
+                        charts={[
+                            <AgePyramid data={await getAgePyramid(4)} key={0} />,
+                            <RadarClusterChart data={await getRadarGroupChart(4)} key={1} classname="h-full"/>,
+                            <ServiceRankingClustered clusterId={4} key={2} data={await getClusterRanking(4)}/>,
+                            <SuperChart key={4} classname="h-full" clusterId={4}/>
+                    ]} 
+                        explanation="Explicação do cluster 5" 
+                        kpis={[
+                            <DescribeKpi clusterId={4} key={0}/>,
+                            <TopServiceClusterKpi clusterId={4} key={1}/>,
+                            <AgeGroupKpi clusterId={4} key={2}/>
+                    ]}/>
+                    <ClusterAnalyze title="Cluster 6"
+                        classKey="cluster5"
+                        charts={[
+                            <AgePyramid data={await getAgePyramid(5)} key={0} />,
+                            <RadarClusterChart data={await getRadarGroupChart(5)} key={1} classname="h-full"/>,
+                            <ServiceRankingClustered clusterId={5} key={2} data={await getClusterRanking(5)}/>,
+                            <SuperChart key={4} classname="h-full" clusterId={5}/>
+                    ]} 
+                        explanation="Explicação do cluster 6" 
+                        kpis={[
+                            <DescribeKpi clusterId={5} key={0}/>,
+                            <TopServiceClusterKpi clusterId={5} key={1}/>,
+                            <AgeGroupKpi clusterId={5} key={2}/>
+                    ]}/>
                 </div>
                 
             </div>
