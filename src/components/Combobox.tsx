@@ -19,9 +19,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function Combobox({ predefinedList, emptyMessage }: Readonly<{ predefinedList: { label: string; value: string }[], emptyMessage: string }>) {
+export function Combobox({ predefinedList, emptyMessage, setValueState }: Readonly<{ predefinedList: string[], emptyMessage: string, setValueState: (value: string) => void }>) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
+
+  React.useEffect(() => {
+    setValueState(value)
+  }, [value])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -33,7 +37,7 @@ export function Combobox({ predefinedList, emptyMessage }: Readonly<{ predefined
           className="w-full justify-between"
         >
           {value
-            ? predefinedList.find((predefinedItem) => predefinedItem.value === value)?.label
+            ? predefinedList.find((predefinedItem) => predefinedItem === value)
             : "Selecione..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -46,8 +50,8 @@ export function Combobox({ predefinedList, emptyMessage }: Readonly<{ predefined
             <CommandGroup className="max-h-[220px] overflow-y-scroll">
               {predefinedList.map((predefinedItem) => (
                 <CommandItem
-                  key={predefinedItem.value}
-                  value={predefinedItem.value}
+                  key={predefinedItem}
+                  value={predefinedItem}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue)
                     setOpen(false)
@@ -56,10 +60,10 @@ export function Combobox({ predefinedList, emptyMessage }: Readonly<{ predefined
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === predefinedItem.value ? "opacity-100" : "opacity-0"
+                      value === predefinedItem ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {predefinedItem.label}
+                  {predefinedItem}
                 </CommandItem>
               ))}
             </CommandGroup>
