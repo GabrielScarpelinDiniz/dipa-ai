@@ -18,6 +18,31 @@ npm install
 ```
 4. Com o postgreSQL instalado, crie um banco de dados chamado `unipar` e rode é necessário rodar alguns scripts para criar as tabelas, por serem dados sensíveis, não é possível liberar o acesso a eles e deve ser solicitado individualmente para o autor do projeto.
 
+4.1 Criando o banco de dados:
+```bash
+CREATE DATABASE unipar;
+```
+4.2 Criando as tabelas (na pasta do projeto):
+```bash
+npx prisma migrate dev
+```
+4.3 Populando as tabelas (SCRIPTS SQL A SER SOLICITADO)
+
+4.4 Criando o arquivo .env na raiz do projeto com as seguintes variáveis de ambiente:
+```bash
+DATABASE_URL="postgresql://user:password@localhost:5432/unipar"
+```
+**Obs:** Substitua `user` e `password` pelo usuário e senha do seu banco de dados.
+
+4.5 Criando o arquivo .env.local na raiz do projeto com as seguintes variáveis de ambiente:
+```bash
+AUTH_SECRET="sua_chave_secreta"
+
+AUTH_GOOGLE_ID="id_google"
+AUTH_GOOGLE_SECRET="chave_secreta_google"
+```
+**Obs:** Substitua `sua_chave_secreta` pela chave secreta que você deseja utilizar para autenticação e `id_google` e `chave_secreta_google` pelas credenciais do Google.
+
 5. Rode o projeto:
 ```bash
 npx next dev
